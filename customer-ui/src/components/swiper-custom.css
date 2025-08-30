@@ -1,0 +1,25 @@
+/* swiper-custom.css */
+.swiper-button-next,
+.swiper-button-prev {
+  width: 40px !important;
+  height: 40px !important;
+  border-radius: 50% !important;
+  background-color: rgb(239, 236, 236) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+.swiper-button-next:after,
+.swiper-button-prev:after {
+  font-size: 24px !important;
+  color: #333 !important;
+}
+
+.swiper-button-prev:after{
+    padding-right: 2px !important;
+}
+
+.swiper-button-next:after{
+    padding-left: 5px !important;
+}
