@@ -2,7 +2,6 @@ import React from "react";
 import { AppBar, Toolbar, IconButton, InputBase, Button, Box, styled } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import { alpha } from "@mui/material/styles";
 import {assets} from "../assets/assets";
 
 const Search = styled("div")(({ theme }) => ({
@@ -42,13 +41,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 export default function Navbar() {
   return (
     <>
-      <AppBar sx={{ backgroundColor: "white", height: {xs: "10vh", md: "10vh", sm: "10vh", lg: "10vh"}, color: "gray", borderColor: "red" }}>
+      <AppBar sx={{ backgroundColor: "white", height: {xs: "10vh", md: "10vh", sm: "10vh", lg: "10vh"}, color: "gray", borderColor: "red", boxShadow: "none" }}>
         <Toolbar
           className="cust-toolbar"
           sx={{
             width: { xs: "100%", sm: "90%", md: "85%" },
             margin: "auto",
-            px: { xs: 2, sm: 3 },
+            px: { xs: 1, sm: 1, md: 0, lg: 0 },
             height: "100%",
             display: "flex",
             justifyContent: { xs: "space-between", md: "flex-start" },

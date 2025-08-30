@@ -9,7 +9,7 @@ import "./swiper-custom.css";
 
 export default function MenuItemSwiper() {
   return (
-    <Box sx={{ py: 4, px: 2,width: { xs: "100%", sm: "90%", md: "85%" }, margin: "auto" }}>
+    <Box sx={{ py: 4, px: 2,width: { xs: "100%", sm: "90%", md: "85%" }, margin: "auto", padding: "2vh 0" }}>
       <Typography variant="h6" gutterBottom>
         Popular Categories
       </Typography>
@@ -20,9 +20,9 @@ export default function MenuItemSwiper() {
         spaceBetween={50}
         slidesPerView={2}
         breakpoints={{
-          640: { slidesPerView: 2 },
-          768: { slidesPerView: 3 },
-          1024: { slidesPerView: 5 },
+          640: { slidesPerView: 3 },
+          768: { slidesPerView: 4 },
+          1024: { slidesPerView: 7 },
         }}
         style={{ padding: "10px 0" }}
       >
