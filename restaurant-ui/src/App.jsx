@@ -5,6 +5,7 @@ import Login from './components/Login'
 import Signup from './components/Signup'
 import RequireAuth from './components/RequireAuth'
 import PersistLogin from './components/PersistLogin'
+import OtpPage from "./components/OtpPage.jsx";
 
 function App() {
   const [count, setCount] = useState(0)
@@ -21,8 +22,9 @@ function App() {
       
       {/* Authentication and Authorization routes */}
       <Route path="/">
-        <Route path="login" element={<Login />}/>
-        <Route path="signup" element={<Signup />}/>
+          <Route path="login" element={<Login />}/>
+          <Route path="signup" element={<Signup />}/>
+          <Route path="verify-otp" element={<OtpPage />} />
       </Route>
     </Routes>
   )

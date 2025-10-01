@@ -1,7 +1,8 @@
-import useLocalStorage from "./useLocalStorage";
+// import useLocalStorage from "./useLocalStorage";
+import useSessionStorage from "./useSessionStorage.js";
 
 const useInput = (key, initValue) => {
-    const [value, setValue] = useLocalStorage(key, initValue);
+    const [value, setValue] = useSessionStorage(key, initValue);
 
     const reset = () => setValue(initValue);
 

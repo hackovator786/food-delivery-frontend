@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext} from 'react';
 import {
   Box,
   Button,
@@ -6,79 +6,24 @@ import {
   Typography,
   Paper,
   IconButton,
-  createTheme,
   ThemeProvider,
   CssBaseline,
+    CircularProgress,
 } from '@mui/material';
 import {
   Email as EmailIcon,
-  Storefront as RestaurantIcon,
 } from '@mui/icons-material';
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import {assets} from '../assets/assets';
-// Define a custom theme for a fresh, food-delivery-app feel
-const theme = createTheme({
-  typography: {
-    h4: {
-      fontWeight: 700,
-    },
-  },
-  palette: {
-    primary: {
-      main: '#E83B25', // A vibrant red-orange color
-    },
-    secondary: {
-      main: '#FFD700', // A bright yellow
-    },
-    background: {
-      default: '#F5F5F5', // Light gray background
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '12px',
-          textTransform: 'none',
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '12px',
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: '24px',
-          boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.1)',
-        },
-      },
-    },
-  },
-});
+import SignUpContext from "../context/SignUpContext.jsx";
+import ThemeContext from "../context/ThemeContext";
 
 export default function SignupPage() {
-  const [email, setEmail] = useState('');
-  const [restaurantName, setRestaurantName] = useState('');
-
-  const handleSendOtp = (e) => {
-    e.preventDefault();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(email)) {
-      console.log('Sending OTP for sign-up to:', email, 'with restaurant name:', restaurantName);
-    } else {
-      console.log('Please enter a valid email address.');
-    }
-  };
+    const {authTheme} = useContext(ThemeContext);
+    const {emailAttribs, loading, handleSendOtp} = useContext(SignUpContext);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={authTheme}>
       <CssBaseline />
       <Box
         sx={{
@@ -86,6 +31,7 @@ export default function SignupPage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
+            padding: 2
         }}
       >
         <Paper
@@ -124,29 +70,12 @@ export default function SignupPage() {
           <form onSubmit={handleSendOtp} style={{ display: 'contents' }}>
             <TextField
               fullWidth
-              label="Restaurant Name"
-              variant="outlined"
-              type="text"
-              value={restaurantName}
-              onChange={(e) => setRestaurantName(e.target.value)}
-              required
-              InputProps={{
-                startAdornment: (
-                  <IconButton edge="start" sx={{ color: 'text.secondary' }}>
-                    <RestaurantIcon />
-                  </IconButton>
-                ),
-              }}
-            />
-            <TextField
-              fullWidth
               label="Email Address"
               variant="outlined"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...emailAttribs}
               required
-              sx={{ mt: 2 }}
+              autoFocus={true}
               InputProps={{
                 startAdornment: (
                   <IconButton edge="start" sx={{ color: 'text.secondary' }}>
@@ -156,7 +85,7 @@ export default function SignupPage() {
               }}
             />
             <Button type="submit" variant="contained" color="primary" fullWidth size="large" sx={{ mt: 1 }}>
-              Sign Up
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Send OTP'}
             </Button>
           </form>
           <Typography variant="body2" sx={{ mt: 1 }}>

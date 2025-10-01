@@ -1,83 +1,29 @@
-import React, { useState } from 'react';
+import React, {useContext} from 'react';
 import {
-  Box,
-  Button,
-  TextField,
-  Typography,
-  Paper,
-  IconButton,
-  createTheme,
-  ThemeProvider,
-  CssBaseline,
+    Box,
+    Button,
+    TextField,
+    Typography,
+    Paper,
+    IconButton,
+    ThemeProvider,
+    CssBaseline, CircularProgress,
 } from '@mui/material';
-import { Link } from "react-router-dom";
+import {Link} from "react-router-dom";
 import {
   Email as EmailIcon,
 } from '@mui/icons-material';
 import {assets} from '../assets/assets';
-
-const theme = createTheme({
-  typography: {
-    fontFamily: 'Inter, sans-serif',
-    h4: {
-      fontWeight: 700,
-    },
-  },
-  palette: {
-    primary: {
-      main: '#E83B25', // A vibrant red-orange color
-    },
-    secondary: {
-      main: '#FFD700', // A bright yellow
-    },
-    background: {
-      default: '#F5F5F5', // Light gray background
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '12px',
-          textTransform: 'none',
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '12px',
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: '24px',
-          boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.1)',
-        },
-      },
-    },
-  },
-});
+import LoginContext, {LoginContextProvider} from "../context/LoginContext.jsx";
+import ThemeContext from "../context/ThemeContext.jsx";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-
-  const handleSendOtp = (e) => {
-    e.preventDefault();
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (emailRegex.test(email)) {
-      console.log('Sending OTP for login to:', email);
-    } else {
-      console.log('Please enter a valid email address.');
-    }
-  };
+    const {authTheme} = useContext(ThemeContext);
+    const {emailAttribs, handleSendOtp, loading} = useContext(LoginContext)
 
   return (
-    <ThemeProvider theme={theme}>
+      <LoginContextProvider>
+      <ThemeProvider theme={authTheme}>
       <CssBaseline />
       <Box
         sx={{
@@ -127,9 +73,9 @@ export default function LoginPage() {
               label="Email Address"
               variant="outlined"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              {...emailAttribs}
               required
+              autoFocus={true}
               InputProps={{
                 startAdornment: (
                   <IconButton edge="start" sx={{ color: 'text.secondary' }}>
@@ -139,7 +85,7 @@ export default function LoginPage() {
               }}
             />
             <Button type="submit" variant="contained" color="primary" fullWidth size="large" sx={{ mt: 1 }}>
-              Login
+                {loading ? <CircularProgress size={24} color="inherit" /> : 'Send OTP'}
             </Button>
           </form>
           <Typography variant="body2" sx={{ mt: 1 }}>
@@ -151,5 +97,5 @@ export default function LoginPage() {
         </Paper>
       </Box>
     </ThemeProvider>
-  );
+      </LoginContextProvider>);
 }

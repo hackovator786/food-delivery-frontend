@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useContext} from 'react';
 import {
   Box,
   Button,
@@ -6,7 +6,6 @@ import {
   Typography,
   Paper,
   IconButton,
-  createTheme,
   ThemeProvider,
   CssBaseline,
 } from '@mui/material';
@@ -14,79 +13,24 @@ import {
   ConfirmationNumber as OtpIcon,
   ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
-
-// Define a custom theme for a fresh, food-delivery-app feel
-const theme = createTheme({
-  typography: {
-    fontFamily: 'Inter, sans-serif',
-    h4: {
-      fontWeight: 700,
-    },
-  },
-  palette: {
-    primary: {
-      main: '#FF6347', // A vibrant red-orange color
-    },
-    secondary: {
-      main: '#FFD700', // A bright yellow
-    },
-    background: {
-      default: '#F5F5F5', // Light gray background
-    },
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: '12px',
-          textTransform: 'none',
-        },
-      },
-    },
-    MuiTextField: {
-      styleOverrides: {
-        root: {
-          '& .MuiOutlinedInput-root': {
-            borderRadius: '12px',
-          },
-        },
-      },
-    },
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          borderRadius: '24px',
-          boxShadow: '0px 8px 20px rgba(0, 0, 0, 0.1)',
-        },
-      },
-    },
-  },
-});
+import {assets} from "../assets/assets.js";
+import ThemeContext from "../context/ThemeContext.jsx";
+import OtpContext from "../context/OtpContext.jsx";
 
 export default function OtpPage() {
-  const [otp, setOtp] = useState('');
-
-  const handleVerifyOtp = (e) => {
-    e.preventDefault();
-    console.log('Verifying OTP:', otp);
-    // In a real app, you would verify the OTP here and handle success/failure
-  };
+    const {otpTheme} = useContext(ThemeContext);
+    const {otp, setOtp, navigate, handleVerifyOtp} = useContext(OtpContext);
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={otpTheme}>
       <CssBaseline />
       <Box
         sx={{
-          minHeight: '100vh',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
           padding: 2,
-          background: 'linear-gradient(45deg, rgba(255, 153, 102, 0.8), rgba(255, 94, 98, 0.8)), url(https://images.unsplash.com/photo-1540189549336-e6e9928a255b?q=80&w=2070&auto=format&fit=crop)',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed'
         }}
       >
         <Paper
@@ -97,7 +41,7 @@ export default function OtpPage() {
             textAlign: 'center',
             display: 'flex',
             flexDirection: 'column',
-            gap: 3,
+            gap: 2,
           }}
         >
           <Box
@@ -111,17 +55,25 @@ export default function OtpPage() {
           >
             <Box
               component="img"
-              src="https://placehold.co/100x100/FF6347/FFFFFF?text=Logo"
+              src={assets.logo}
               alt="Logo"
-              sx={{ height: 60, width: 60, borderRadius: '50%' }}
+              sx={{ height: "100%", width: "90px", borderRadius: '50%', padding: 0, margin: 0 }}
             />
           </Box>
-          <IconButton onClick={() => console.log("Back to previous page")} sx={{ alignSelf: 'flex-start' }}>
-            <ArrowBackIcon />
-          </IconButton>
-          <Typography variant="h4" component="h1" gutterBottom>
-            Verify OTP
-          </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 0 }}>
+                <IconButton
+                    onClick={() => {
+                        console.log("Back to previous page");
+                        navigate(-1);
+                    }}
+                    sx={{ mr: 5 }}
+                >
+                    <ArrowBackIcon />
+                </IconButton>
+                <Typography variant="h4" component="h1" gutterBottom>
+                    Verify OTP
+                </Typography>
+            </Box>
           <Typography variant="body2" color="text.secondary">
             Enter the OTP sent to your email address.
           </Typography>
@@ -134,6 +86,7 @@ export default function OtpPage() {
               value={otp}
               onChange={(e) => setOtp(e.target.value)}
               required
+              autoFocus={true}
               InputProps={{
                 startAdornment: (
                   <IconButton edge="start" sx={{ color: 'text.secondary' }}>
