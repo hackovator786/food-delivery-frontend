@@ -3,6 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import useInput from '../hooks/useInput';
 import useAuth from "../hooks/useAuth";
 import axios from '../api/axios';
+import {toast} from "react-toastify";
 
 const LOGIN_URL = '/login';
 
@@ -13,6 +14,7 @@ export const LoginContextProvider = ({ children }) => {
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
+    const [errMsg, setErrMsg] = useState('');
 
     const userRef = useRef();
     const errRef = useRef();
@@ -23,12 +25,16 @@ export const LoginContextProvider = ({ children }) => {
     const handleSendOtp = (e) => {
         e.preventDefault();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if(!emailRegex.test(email)) {
+            toast.error("Invalid email!");
+        }
         if (emailRegex.test(email)) {
             setLoading(true);
             console.log('Sending OTP for login to:', email);
             setTimeout(() => {
                 setLoading(false);
                 navigate('/verify-otp');
+                toast.success('Otp sent successfully');
             }, 2000);
         } else {
             console.log('Please enter a valid email address.');
@@ -39,7 +45,7 @@ export const LoginContextProvider = ({ children }) => {
     return (
         <LoginContext.Provider value={
             {
-                navigate, location, from, userRef, errRef, email, resetEmail, emailAttribs, loading, setLoading, handleSendOtp
+                navigate, location, from, errMsg, setErrMsg, userRef, errRef, email, resetEmail, emailAttribs, loading, setLoading, handleSendOtp
             }
         }>
             {children}

@@ -8,7 +8,7 @@ import PersistLogin from './components/PersistLogin'
 import OtpPage from "./components/OtpPage.jsx";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
 
   return (
     <Routes>
@@ -19,7 +19,7 @@ function App() {
             </Route>
           </Route>
       </Route>
-      
+
       {/* Authentication and Authorization routes */}
       <Route path="/">
           <Route path="login" element={<Login />}/>

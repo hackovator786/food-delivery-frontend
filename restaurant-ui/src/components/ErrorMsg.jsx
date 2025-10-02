@@ -1,8 +1,9 @@
-import { useContext } from "react";
+import {useContext} from "react";
 
-export default function ErrorMsg({context}){
+export default function ErrorMsg({context}) {
     const {errRef, errMsg} = useContext(context);
     return (
-        <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+        // <p ref={errRef} className={errMsg ? "errmsg" : "offscreen"} aria-live="assertive">{errMsg}</p>
+        <p ref={errRef} className={"errmsg"}>Error</p>
     );
 }

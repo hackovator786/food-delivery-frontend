@@ -14,15 +14,15 @@ import {
   Email as EmailIcon,
 } from '@mui/icons-material';
 import {assets} from '../assets/assets';
-import LoginContext, {LoginContextProvider} from "../context/LoginContext.jsx";
+import LoginContext from "../context/LoginContext.jsx";
 import ThemeContext from "../context/ThemeContext.jsx";
+import ErrorMsg from "./ErrorMsg.jsx";
 
 export default function LoginPage() {
     const {authTheme} = useContext(ThemeContext);
     const {emailAttribs, handleSendOtp, loading} = useContext(LoginContext)
 
   return (
-      <LoginContextProvider>
       <ThemeProvider theme={authTheme}>
       <CssBaseline />
       <Box
@@ -97,5 +97,5 @@ export default function LoginPage() {
         </Paper>
       </Box>
     </ThemeProvider>
-      </LoginContextProvider>);
+      );
 }
