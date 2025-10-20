@@ -18,10 +18,13 @@ import {Link} from "react-router-dom";
 import {assets} from '../assets/assets';
 import SignUpContext from "../context/SignUpContext.jsx";
 import ThemeContext from "../context/ThemeContext";
+import ErrorMsg from "./ErrorMsg.jsx";
+import AuthContext from "../context/AuthProvider.jsx";
 
 export default function SignupPage() {
     const {authTheme} = useContext(ThemeContext);
-    const {fullName, setFullName, emailAttribs, loading, handleSendOtp} = useContext(SignUpContext);
+    const {fullName, setFullName,loading, handleSendOtp} = useContext(SignUpContext);
+    const {email, setEmail} = useContext(AuthContext);
 
     return (
         <ThemeProvider theme={authTheme}>
@@ -90,7 +93,8 @@ export default function SignupPage() {
                             label="Email Address"
                             variant="outlined"
                             type="email"
-                            {...emailAttribs}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             required
                             autoFocus={true}
                             InputProps={{

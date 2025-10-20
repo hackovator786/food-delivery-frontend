@@ -46,5 +46,5 @@
 }
 
 .offscreen {
-    display: none;
+    visibility: hidden;
 }

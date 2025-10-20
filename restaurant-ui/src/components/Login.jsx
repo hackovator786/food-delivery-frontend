@@ -17,10 +17,12 @@ import {assets} from '../assets/assets';
 import LoginContext from "../context/LoginContext.jsx";
 import ThemeContext from "../context/ThemeContext.jsx";
 import ErrorMsg from "./ErrorMsg.jsx";
+import AuthContext from "../context/AuthProvider.jsx";
 
 export default function LoginPage() {
     const {authTheme} = useContext(ThemeContext);
-    const {emailAttribs, handleSendOtp, loading} = useContext(LoginContext)
+    const {email, setEmail} = useContext(AuthContext);
+    const { handleSendOtp, loading} = useContext(LoginContext);
 
   return (
       <ThemeProvider theme={authTheme}>
@@ -73,7 +75,8 @@ export default function LoginPage() {
               label="Email Address"
               variant="outlined"
               type="email"
-              {...emailAttribs}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               autoFocus={true}
               InputProps={{

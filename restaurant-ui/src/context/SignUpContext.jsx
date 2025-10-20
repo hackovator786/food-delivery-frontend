@@ -1,16 +1,16 @@
-import {createContext, useRef, useState} from "react";
+import {createContext, useContext, useRef, useState} from "react";
 import axios from "../api/axios";
 import {useNavigate} from "react-router-dom";
-import useInput from "../hooks/useInput.js";
 import {toast} from "react-toastify";
+import AuthContext from "./AuthProvider.jsx";
 
-const REGISTER_URL = '/signup';
+const SIGNUP_URL = '/auth/signup/send-otp';
 
 const SignUpContext = createContext();
 
 export const SignUpContextProvider = ({ children }) => {
-    const [fullName, setFullName] = useState("");
-    const [email, resetEmail, emailAttribs] = useInput('email', '');
+    const {email} = useContext(AuthContext);
+    const [fullName, setFullName] = useState('');
     const navigate = useNavigate();
     const [loading, setLoading] = useState(false);
     const [errMsg, setErrMsg] = useState('');
@@ -26,23 +26,25 @@ export const SignUpContextProvider = ({ children }) => {
         }
         setLoading(true);
         try {
-            const response = await axios.post(REGISTER_URL,
-                JSON.stringify({}),
+            const response = await axios.post(SIGNUP_URL,
+                JSON.stringify({email}),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true
                 }
             );
-            console.log(JSON.stringify(response?.data));
+            navigate('/verify-otp');
+            toast.success("Verification code sent successfully");
+            sessionStorage.setItem('authContext', JSON.stringify('signUp'));
         } catch (err) {
-            console.log(err);
+            toast.error(err?.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
-        navigate('/verify-otp');
     };
 
     return (
-        <SignUpContext.Provider value={{ fullName, setFullName, email, resetEmail, emailAttribs,
+        <SignUpContext.Provider value={{ fullName, setFullName,
         loading, setLoading, errMsg, setErrMsg, errRef, handleSendOtp }}>
         {children}
         </SignUpContext.Provider>

@@ -29,7 +29,7 @@ createRoot(document.getElementById('root')).render(
             </AuthProvider>
             <ToastContainer
                 position="top-right"
-                autoClose={3000}
+                autoClose={8000}
                 hideProgressBar={false}
                 newestOnTop={true}
                 closeOnClick

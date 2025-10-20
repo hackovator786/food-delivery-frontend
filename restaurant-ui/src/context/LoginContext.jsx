@@ -1,16 +1,15 @@
-import {createContext, useState, useRef} from "react";
+import {createContext, useState, useRef, useContext} from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
-import useInput from '../hooks/useInput';
-import useAuth from "../hooks/useAuth";
 import axios from '../api/axios';
 import {toast} from "react-toastify";
+import AuthContext from "./AuthProvider.jsx";
 
-const LOGIN_URL = '/login';
+const LOGIN_URL = '/auth/login/send-otp';
 
 const LoginContext = createContext({});
 
 export const LoginContextProvider = ({ children }) => {
-    const { setAuth } = useAuth();
+    const {email} = useContext(AuthContext);
     const navigate = useNavigate();
     const location = useLocation();
     const from = location.state?.from?.pathname || "/";
@@ -19,25 +18,31 @@ export const LoginContextProvider = ({ children }) => {
     const userRef = useRef();
     const errRef = useRef();
 
-    const [email, resetEmail, emailAttribs] = useInput('email', '');
     const [loading, setLoading] = useState(false);
 
-    const handleSendOtp = (e) => {
+    const handleSendOtp = async (e) => {
         e.preventDefault();
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if(!emailRegex.test(email)) {
             toast.error("Invalid email!");
+            return;
         }
-        if (emailRegex.test(email)) {
-            setLoading(true);
-            console.log('Sending OTP for login to:', email);
-            setTimeout(() => {
-                setLoading(false);
-                navigate('/verify-otp');
-                toast.success('Otp sent successfully');
-            }, 2000);
-        } else {
-            console.log('Please enter a valid email address.');
+        setLoading(true);
+        try {
+            const response = await axios.post(LOGIN_URL,
+                JSON.stringify({email}),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            );
+            navigate('/verify-otp');
+            toast.success("Verification code sent successfully");
+            sessionStorage.setItem('authContext', JSON.stringify('login'));
+        } catch (err) {
+            toast.error(err?.response?.data?.message);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -45,7 +50,7 @@ export const LoginContextProvider = ({ children }) => {
     return (
         <LoginContext.Provider value={
             {
-                navigate, location, from, errMsg, setErrMsg, userRef, errRef, email, resetEmail, emailAttribs, loading, setLoading, handleSendOtp
+                navigate, location, from, errMsg, setErrMsg, userRef, errRef, loading, setLoading, handleSendOtp
             }
         }>
             {children}
