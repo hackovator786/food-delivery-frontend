@@ -30,7 +30,7 @@ export const LoginContextProvider = ({ children }) => {
         setLoading(true);
         try {
             const response = await axios.post(LOGIN_URL,
-                JSON.stringify({email}),
+                JSON.stringify({email, "role": "restaurant_owner"}),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true

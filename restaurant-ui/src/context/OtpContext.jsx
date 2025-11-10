@@ -14,6 +14,7 @@ const SIGNUP_RESEND_URL = '/auth/signup/resend-otp';
 const OtpContext = createContext();
 
 export const OtpContextProvider = ({ children }) => {
+    const from = location.state?.from?.pathname || "/";
     const { setAuth } = useAuth();
     const {fullName, setFullName} = useContext(SignUpContext);
     const {email, setEmail} = useContext(AuthContext);
@@ -28,6 +29,7 @@ export const OtpContextProvider = ({ children }) => {
     const errRef = useRef();
 
     const handleVerifyOtp = async (e) => {
+        console.log("From path: " + from);
         e.preventDefault();
         if(!authContext || (authContext !== 'login' && authContext !== 'signUp') || (authContext === 'signUp' && !fullName) || !emailRegex.test(email)) {
             toast.error("Can't verify otp");
@@ -42,8 +44,8 @@ export const OtpContextProvider = ({ children }) => {
 
         if(authContext === 'signUp'){
             content.name = fullName;
-            content.role = "restaurant_owner";
         }
+        content.role = "restaurant_owner";
         setLoading(true);
         try {
             console.log('URL: ' + URL);
@@ -58,7 +60,7 @@ export const OtpContextProvider = ({ children }) => {
             console.log(response?.data?.accessToken);
             toast.success("Email verified successfully!");
             sessionStorage.removeItem('authContext');
-            navigate('/home');
+            navigate('/');
             setAuth({accessToken: response?.data?.accessToken});
             setFullName('');
             setEmail('');

@@ -2,8 +2,10 @@ import { Outlet } from "react-router-dom";
 import { useState, useEffect } from "react";
 import useRefreshToken from '../hooks/useRefreshToken';
 import useAuth from '../hooks/useAuth';
+import LoadingAnimation from "./LoadingAnimation.jsx";
 
 const PersistLogin = () => {
+    console.log("PersistLogin");
     const [isLoading, setIsLoading] = useState(true);
     const refresh = useRefreshToken();
     const { auth } = useAuth();
@@ -31,7 +33,7 @@ const PersistLogin = () => {
     return (
         <>
             {isLoading
-                ? <p>Loading...</p>
+                ? <LoadingAnimation />
                 : <Outlet />
             }
         </>
