@@ -6,13 +6,11 @@ import Signup from './components/Signup'
 import RequireAuth from './components/RequireAuth'
 import PersistLogin from './components/PersistLogin'
 import OtpPage from "./components/OtpPage.jsx";
-import ScooterAnimation from "./components/ScooterAnimation.jsx";
 import HomePage from "./components/HomePage.jsx";
 import AuthContainer from "./components/AuthContainer.jsx";
 import CheckAuth from "./components/CheckAuth.jsx";
 
 function App() {
-    const [count, setCount] = useState(0);
 
     return (
         <Routes>
@@ -20,7 +18,6 @@ function App() {
                 <Route element={<PersistLogin/>}>
                     <Route element={<RequireAuth/>}>
                         <Route path="" element={<HomePage/>}/>
-                        <Route path="protected-route" element={<>Protected Route</>}/>
                     </Route>
                 </Route>
             </Route>
