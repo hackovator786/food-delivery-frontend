@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import {
     Typography, IconButton, Box, Grid, Paper, Table, TableBody, TableCell,
     TableContainer, TableHead, TableRow, Chip, Button, TextField,
@@ -10,6 +10,10 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import AddItemDialog from "./AddItemDialog.jsx";
+import useAxiosPrivate from "../hooks/useAxiosPrivate.js";
+import {toast} from "react-toastify";
+
+const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
 
 const MenuItems = () => {
     const [menuItems, setMenuItems] = useState([]);
@@ -21,6 +25,21 @@ const MenuItems = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const categories = useMemo(() => ['All', ...new Set(menuItems.map(item => item.category))], [menuItems]);
+    const axiosPrivate = useAxiosPrivate();
+
+    useEffect(() => {
+        async function fetchMenuItems() {
+            try{
+                const response = await axiosPrivate.get(`/menu/get-menu-items`);
+                console.log(response?.data);
+                setMenuItems(response?.data);
+            } catch (err){
+                console.log(err);
+            }
+        }
+        fetchMenuItems();
+    }, []);
+
 
     // Filtered and searched data
     const filteredItems = useMemo(() => {
@@ -74,9 +93,18 @@ const MenuItems = () => {
     const handleOpenModal = () => setIsModalOpen(true);
     const handleCloseModal = () => setIsModalOpen(false); // Used internally by dialog reset logic
 
-    const handleAddItem = (newItem) => {
-        // Add the new item to the start of the array
-        setMenuItems(prevItems => [newItem, ...prevItems]);
+    const handleAddItem = async (newItem,image) => {
+        try {
+            const formData = new FormData();
+            formData.append('menuItem', JSON.stringify(newItem));
+            formData.append('file', image);
+            const response = await axiosPrivate.post(`/menu/add-item`, formData, {headers: { "Content-Type": "multipart/form-data"}});
+            console.log(response);
+            toast.success("Item added successfully");
+        } catch (err){
+            console.log(err);
+            toast.error("Error adding item");
+        }
     };
 
     return (
@@ -148,50 +176,50 @@ const MenuItems = () => {
                 <Table>
                     <TableHead sx={{ bgColor: 'background.default' }}>
                         <TableRow>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Image</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Item Name</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }}>Category</TableCell>
-                            {/*<TableCell sx={{ fontWeight: 'bold' }}>Tags</TableCell>*/}
-                            <TableCell sx={{ fontWeight: 'bold' }} align="right">Price</TableCell>
-                            <TableCell sx={{ fontWeight: 'bold' }} align="right">Stock</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">Image</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">Item Name</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">Category</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">Tags</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">Price(₹)</TableCell>
+                            <TableCell sx={{ fontWeight: 'bold' }} align="center">Stock</TableCell>
                             <TableCell sx={{ fontWeight: 'bold' }} align="center">Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {filteredItems.length > 0 ? (
                             pagedItems.map((item) => (
-                                <TableRow key={item.id} hover>
-                                    <TableCell>
+                                <TableRow key={item.menuItemId} hover>
+                                    <TableCell align="center">
                                         <img
-                                            src={item.img}
+                                            src={IMAGE_BASE_URL +  item.imageUrl}
                                             alt={item.name}
                                             // Fallback in case of broken URL
                                             onError={(e) => { e.target.onerror = null; e.target.src = `https://placehold.co/40x40/CCCCCC/000000?text=${item.name.charAt(0)}` }}
                                             style={{ width: 40, height: 40, objectFit: 'cover', borderRadius: '4px' }}
                                         />
                                     </TableCell>
-                                    <TableCell>{item.name}</TableCell>
-                                    <TableCell>{item.category}</TableCell>
+                                    <TableCell align="center">{item.name}</TableCell>
+                                    <TableCell align="center">{item.category}</TableCell>
                                     {/* Display Tags */}
-                                    {/*<TableCell>*/}
-                                    {/*    <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap' }}>*/}
-                                    {/*        {item.tags && item.tags.length > 0 ? (*/}
-                                    {/*            item.tags.slice(0, 3).map(tag => ( // Show up to 3 tags*/}
-                                    {/*                <Chip key={tag} label={tag} size="small" variant="outlined" sx={{ borderRadius: '4px' }} />*/}
-                                    {/*            ))*/}
-                                    {/*        ) : (*/}
-                                    {/*            <Typography variant="caption" color="text.disabled">N/A</Typography>*/}
-                                    {/*        )}*/}
-                                    {/*        {item.tags && item.tags.length > 3 && (*/}
-                                    {/*            <Typography variant="caption" color="text.secondary">+{item.tags.length - 3} more</Typography>*/}
-                                    {/*        )}*/}
-                                    {/*    </Box>*/}
-                                    {/*</TableCell>*/}
-                                    <TableCell align="right">${item.price}</TableCell>
-                                    <TableCell align="right">
+                                    <TableCell align="center">
+                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap',alignItems: 'center', justifyContent: 'center', flexDirection: "column" }}>
+                                            {item.tags && item.tags.length > 0 ? (
+                                                item.tags.slice(0, 3).map(tag => ( // Show up to 3 tags
+                                                    <Chip key={tag} label={tag} size="small" variant="outlined" sx={{ borderRadius: '4px' }} />
+                                                ))
+                                            ) : (
+                                                <Typography variant="caption" color="text.disabled">N/A</Typography>
+                                            )}
+                                            {item.tags && item.tags.length > 3 && (
+                                                <Typography variant="caption" color="text.secondary">+{item.tags.length - 3} more</Typography>
+                                            )}
+                                        </Box>
+                                    </TableCell>
+                                    <TableCell align="center">{item.price}</TableCell>
+                                    <TableCell align="center">
                                         <Chip
-                                            label={item.stock > 10 ? 'In Stock' : 'Out of Stock'}
-                                            color={item.stock > 10 ? 'success' : 'error'}
+                                            label={item.isAvailable ? 'In Stock' : 'Out of Stock'}
+                                            color={item.isAvailable ? 'success' : 'error'}
                                             size="small"
                                             sx={{ borderRadius: '6px' }}
                                         />
