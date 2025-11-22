@@ -2,7 +2,7 @@ import './App.css'
 import HomePage from './components/HomePage.jsx'
 import {Route, Routes} from "react-router-dom";
 import Navbar from "./components/Navbar.jsx";
-import MenuItems from "./components/MenuItems.jsx";
+import RestaurantMenu from "./components/RestaurantMenu.jsx";
 
 function App() {
 
@@ -10,7 +10,7 @@ function App() {
         <Routes>
             <Route path="/" element={<Navbar />}>
                 <Route path="" element={<HomePage/>}/>
-                <Route path="items" element={<MenuItems/>}/>
+                <Route path="items" element={<RestaurantMenu/>}/>
             </Route>
         </Routes>
     )

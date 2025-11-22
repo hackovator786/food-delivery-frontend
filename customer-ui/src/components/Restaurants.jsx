@@ -11,7 +11,11 @@ export default function Restaurants(){
         try {
             const response = await axios.get("/search/all-restaurants");
             console.log(response.data);
-            setRestaurants(response.data);
+            let restaurants = response?.data;
+            for(let i = 0; i < 10; i++){
+                restaurants.push(restaurants.at(0));
+            }
+            setRestaurants(restaurants);
         } catch (err){
             console.log(err);
         }
@@ -29,37 +33,88 @@ export default function Restaurants(){
     }, [])
 
     return (
-        <Box sx={{py: 4, px: 2,width: { xs: "100%", sm: "90%", md: "85%" }, margin: "auto", padding: "2vh 0", display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
-        <Typography variant="h5" gutterBottom>
-          Featured Restaurants
-        </Typography>
-        <Grid container spacing={3}>
-          {restaurants.map((res) => (
-            <Grid item xs={12} sm={6} md={3}
-                  key={res.restaurantId}
-                  minWidth="200px"
-                  sx={{cursor: "pointer"}}
-                  onClick={()=>handleRestaurantClick(res.restaurantId)}
+        <Box
+            sx={{
+                py: 4,
+                px: 2,
+                width: { xs: "100%", sm: "90%", md: "85%" },
+                margin: "auto",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "flex-start",
+            }}
+        >
+            <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                Featured Restaurants
+            </Typography>
+
+            <Box
+                sx={{
+                    display: "grid",
+                    width: "100%",
+                    gap: 3,
+                    gridTemplateColumns: {
+                        xs: "repeat(2, 1fr)", // 2 cols on small screens
+                        md: "repeat(4, 1fr)", // 4 cols on medium screens
+                        lg: "repeat(6, 1fr)", // 6 cols on large screens
+                    },
+                }}
             >
-              <Card sx={{px: 2, paddingTop: 2, paddingBottom: 0.5, borderRadius: "5px", borderColor: "black"}} >
-                <CardMedia
-                  component="img"
-                  height="160"
-                  image={IMAGE_BASE_URL + res.imageUrl}
-                  alt="Restaurant"
-                  sx={{borderRadius: "8px", width: "auto"}}
-                />
-                <CardContent>
-                  <Typography variant="h6">{res.restaurantName}</Typography>
-                  <Typography variant="body2" color="text.secondary">
-                      {res.rating !== 0.0 ? res.rating : "Not yet rated"}
-                  </Typography>
-                  <Typography variant="body2">{res.city}</Typography>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-        </Grid>
+                {restaurants.map((res) => (
+                    <Card
+                        key={res.restaurantId}
+                        onClick={() => handleRestaurantClick(res.restaurantId)}
+                        sx={{
+                            borderRadius: "8px",
+                            overflow: "hidden",
+                            width: "100%",
+                            height: "100%",
+                            cursor: "pointer",
+                            display: "flex",
+                            flexDirection: "column",
+                            transition: "transform 0.2s",
+                            "&:hover": {
+                                transform: "scale(1.02)",
+                            },
+                        }}
+                    >
+                        <CardMedia
+                            component="img"
+                            height="140"
+                            image={IMAGE_BASE_URL + res.imageUrl}
+                            alt={res.restaurantName}
+                            sx={{ objectFit: "cover" }}
+                        />
+                        <CardContent sx={{ flexGrow: 1 }}>
+                            <Typography
+                                variant="subtitle1"
+                                component="div"
+                                noWrap
+                                sx={{ fontWeight: 'bold' }}
+                            >
+                                {res.restaurantName}
+                            </Typography>
+
+                            <Box display="flex" justifyContent="space-between" alignItems="center" mt={1}>
+                                <Typography variant="body2" sx={{
+                                    backgroundColor: res.rating >= 4 ? "green" : "orange",
+                                    color: "white",
+                                    px: 0.5,
+                                    borderRadius: 1,
+                                    fontSize: "0.75rem"
+                                }}>
+                                    {res.rating !== 0.0 ? `★ ${res.rating}` : "NEW"}
+                                </Typography>
+                            </Box>
+
+                            <Typography variant="caption" color="text.secondary" display="block" mt={1}>
+                                {res.city}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                ))}
+            </Box>
         </Box>
+
     );
 }

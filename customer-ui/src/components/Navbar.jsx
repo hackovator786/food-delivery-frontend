@@ -1,4 +1,4 @@
-import {Outlet} from "react-router-dom";
+import {Outlet, useNavigate} from "react-router-dom";
 import React, {useContext} from "react";
 import {AppBar, Toolbar, IconButton, InputBase, Button, Box, styled, Badge} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
@@ -42,7 +42,7 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 
 export default function Navbar() {
     const {PRIMARY_COLOR} = useContext(ThemeContext);
-
+    const navigate = useNavigate();
     return (
         <>
             <AppBar sx={{
@@ -50,7 +50,7 @@ export default function Navbar() {
                 height: {xs: "10vh", md: "10vh", sm: "10vh", lg: "10vh"},
                 color: "gray",
                 borderColor: "red",
-                boxShadow: "none"
+                boxShadow: "0 2px 2px 0 rgba(0, 0, 0, 0.1), 0 2px 2px 0 rgba(0, 0, 0, 0.1)"
             }}>
                 <Toolbar
                     className="cust-toolbar"
@@ -73,6 +73,7 @@ export default function Navbar() {
                             objectFit: "contain",
                             cursor: "pointer",
                         }}
+                        onClick={() => {navigate("/")}}
                     />
 
                     <Search

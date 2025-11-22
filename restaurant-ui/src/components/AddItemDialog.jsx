@@ -104,6 +104,7 @@ const AddItemDialog = ({ open, handleClose, handleSave, categories }) => {
         };
 
         await handleSave(newItem,imageFile);
+        handleFormClear();
         setIsAdding(false);
     };
 

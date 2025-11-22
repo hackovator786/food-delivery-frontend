@@ -51,10 +51,10 @@ const MenuItems = () => {
         }
 
         // 2. Filter by Stock
-        if (stockFilter === 'In Stock (>10)') {
-            result = result.filter(item => item.stock > 10);
-        } else if (stockFilter === 'Low Stock (<=10)') {
-            result = result.filter(item => item.stock <= 10);
+        if (stockFilter === 'In Stock') {
+            result = result.filter(item => item.isAvailable === true);
+        } else if (stockFilter === 'Out of Stock') {
+            result = result.filter(item => item.isAvailable === false);
         }
 
         // 3. Filter by Search Term
@@ -164,8 +164,8 @@ const MenuItems = () => {
                             sx={{ borderRadius: '8px' }}
                         >
                             <MenuItem value="All">All Stock</MenuItem>
-                            <MenuItem value="In Stock (>10)">In Stock (&gt;10)</MenuItem>
-                            <MenuItem value="Low Stock (<=10)">Low Stock (&le;10)</MenuItem>
+                            <MenuItem value="In Stock">In Stock</MenuItem>
+                            <MenuItem value="Out of Stock">Out of Stock</MenuItem>
                         </Select>
                     </FormControl>
                 </Grid>
@@ -202,7 +202,7 @@ const MenuItems = () => {
                                     <TableCell align="center">{item.category}</TableCell>
                                     {/* Display Tags */}
                                     <TableCell align="center">
-                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap',alignItems: 'center', justifyContent: 'center', flexDirection: "column" }}>
+                                        <Box sx={{ display: 'flex', gap: 0.5, flexWrap: 'wrap',alignItems: 'center', justifyContent: 'center'}}>
                                             {item.tags && item.tags.length > 0 ? (
                                                 item.tags.slice(0, 3).map(tag => ( // Show up to 3 tags
                                                     <Chip key={tag} label={tag} size="small" variant="outlined" sx={{ borderRadius: '4px' }} />
