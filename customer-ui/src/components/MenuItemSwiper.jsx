@@ -5,7 +5,7 @@ import "swiper/css";
 import "swiper/css/navigation";
 import { Box, Typography } from "@mui/material";
 import { categories } from "../assets/assets";
-import "./swiper-custom.css";
+import "../css/swiper-custom.css";
 
 export default function MenuItemSwiper() {
   return (
