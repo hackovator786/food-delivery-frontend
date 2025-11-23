@@ -1,10 +1,13 @@
 import {Outlet, useNavigate} from "react-router-dom";
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import {AppBar, Toolbar, IconButton, InputBase, Button, Box, styled, Badge} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import {assets} from "../assets/assets";
 import ThemeContext from "../context/ThemeContext.jsx";
+import HomeContext from "../context/HomeContext.jsx";
+import AuthContext from "../context/AuthProvider.jsx";
+import useAxiosPrivate from "../hooks/useAxiosPrivate.js";
 
 const Search = styled("div")(({theme}) => ({
     position: "relative",
@@ -41,7 +44,27 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 }));
 
 export default function Navbar() {
+    const {auth} = useContext(AuthContext);
     const {PRIMARY_COLOR} = useContext(ThemeContext);
+    const {cartItemsCount, setCartItemsCount} = useContext(HomeContext);
+    const axiosPrivate = useAxiosPrivate();
+
+    const getCartItemsCount = async () => {
+        try {
+            const response = await axiosPrivate.get("/cart/get-items-count");
+            setCartItemsCount(response.data.cartItemsCount ? response.data.cartItemsCount : 0);
+        } catch (err){
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        if(auth.accessToken) {
+            console.log("Getting cart items");
+            getCartItemsCount();
+        }
+    }, []);
+
     const navigate = useNavigate();
     return (
         <>
@@ -99,7 +122,7 @@ export default function Navbar() {
                         <IconButton color="black" aria-label="shopping cart" sx={{color: "black", marginLeft: 4,"&:hover": {
                                 color: PRIMARY_COLOR
                             },}}>
-                            <Badge badgeContent={"9+"} color="error">
+                            <Badge badgeContent={cartItemsCount > 9 ? "9+" : cartItemsCount} color="error">
                                 <ShoppingCartIcon />
                             </Badge>
                         </IconButton>

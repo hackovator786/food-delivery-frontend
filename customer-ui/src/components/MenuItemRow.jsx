@@ -1,9 +1,12 @@
 import {Box, Card, CardMedia, Typography} from "@mui/material";
 import AddButtonControl from "./AddButtonControl.jsx";
+import {useContext} from "react";
+import ThemeContext from "../context/ThemeContext.jsx";
 
 const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
 
 export default function MenuItemRow({ item, onOpenModal, quantity, onAdd, onRemove }) {
+    const {PRIMARY_COLOR} = useContext(ThemeContext);
     const isLongDescription = item.description.length > 100; // Threshold for "Read More"
 
     return (
@@ -56,7 +59,7 @@ export default function MenuItemRow({ item, onOpenModal, quantity, onAdd, onRemo
                 {isLongDescription && (
                     <Typography
                         onClick={() => onOpenModal(item)}
-                        sx={{ cursor: "pointer", fontWeight: "bold", color: "gray", fontSize: "0.9rem", mt:0.5 }}
+                        sx={{ cursor: "pointer", fontWeight: "bold", color: PRIMARY_COLOR, fontSize: "0.9rem", mt:0.5 }}
                     >
                         Read More
                     </Typography>

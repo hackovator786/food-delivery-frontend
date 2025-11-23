@@ -10,12 +10,8 @@ export default function Restaurants(){
     const getRestaurants = async () => {
         try {
             const response = await axios.get("/search/all-restaurants");
-            console.log(response.data);
-            let restaurants = response?.data;
-            for(let i = 0; i < 10; i++){
-                restaurants.push(restaurants.at(0));
-            }
-            setRestaurants(restaurants);
+
+            setRestaurants(response.data);
         } catch (err){
             console.log(err);
         }

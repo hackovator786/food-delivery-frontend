@@ -15,7 +15,6 @@ export default function RestaurantMenu() {
 
     const restaurantId = searchParams.get("restaurant-id");
 
-    console.log("RestaurantId:", restaurantId);
     const [menuItems, setMenuItems] = useState([]);
     const getMenuItems = async () => {
         try {
@@ -34,40 +33,30 @@ export default function RestaurantMenu() {
     }, []);
 
     const theme = useTheme();
-    // Breakpoint check: is the screen smaller than 'md' (900px)?
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-    // State for Cart: { "itemId1": 2, "itemId2": 1 }
     const [cart, setCart] = useState({});
 
-    // State for Modal
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
 
-    // Cart Logic
     const handleAdd = (id) => {
-        setCart((prev) => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
+
+    };
+
+    const handleAddQty = (id) => {
+
     };
 
     const handleRemove = (id) => {
-        setCart((prev) => {
-            const currentQty = prev[id] || 0;
-            if (currentQty <= 1) {
-                const newCart = { ...prev };
-                delete newCart[id];
-                return newCart;
-            }
-            return { ...prev, [id]: currentQty - 1 };
-        });
+
     };
 
-    // Modal Logic
     const handleOpenModal = (item) => {
         setSelectedItem(item);
         setModalOpen(true);
     };
     const handleCloseModal = () => setModalOpen(false);
-
 
 
     return (
@@ -79,15 +68,13 @@ export default function RestaurantMenu() {
                 margin: "auto",
             }}
         >
-            {/* Responsive Layout Switcher */}
             {isSmallScreen ? (
-                // --- SMALL SCREEN: GRID VIEW (2 Cards per row) ---
                 <Box
                     sx={{
                         display: "grid",
                         gridTemplateColumns: "repeat(2, 1fr)", // Force 2 columns
                         gap: 2,
-                        pb: 10 // Extra space at bottom
+                        pb: 10
                     }}
                 >
                     {menuItems.map((item) => (
@@ -102,7 +89,6 @@ export default function RestaurantMenu() {
                     ))}
                 </Box>
             ) : (
-                // --- LARGE SCREEN: LIST VIEW (Row Layout) ---
                 <Box>
                     {menuItems.map((item) => (
                         <MenuItemRow
@@ -117,7 +103,6 @@ export default function RestaurantMenu() {
                 </Box>
             )}
 
-            {/* Details Modal */}
             <ItemDetailsModal
                 open={modalOpen}
                 handleClose={handleCloseModal}
