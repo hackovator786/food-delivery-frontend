@@ -1,15 +1,23 @@
-import {createContext, useState} from "react";
+import {createContext, useEffect, useState} from "react";
+import useLocalStorage from "../hooks/useLocalStorage.js";
 
 
 const HomeContext = createContext({});
 
 export const HomeContextProvider = ({ children }) => {
-    const [cartItemsCount, setCartItemsCount] = useState(0);
+    const [cartItems, setCartItems] = useLocalStorage("cartItems", {});
+    const [cartItemsCount, setCartItemsCount] = useState(Object.keys(cartItems).length);
+    const [cartItemsRestaurantId, setCartItemsRestaurantId] = useState(null);
+
+    useEffect(() => {
+        console.log("Inside HomeContext...");
+        setCartItemsCount(Object.keys(cartItems).length);
+    }, [cartItems]);
 
     return (
         <HomeContext.Provider value={
             {
-                cartCount: cartItemsCount, setCartCount: setCartItemsCount
+                cartItems, setCartItems, cartItemsCount, setCartItemsCount,cartItemsRestaurantId, setCartItemsRestaurantId
             }
         }>
             {children}

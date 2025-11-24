@@ -27,7 +27,7 @@ export const SignUpContextProvider = ({ children }) => {
         setLoading(true);
         try {
             const response = await axios.post(SIGNUP_URL,
-                JSON.stringify({email, "role": "restaurant_owner"}),
+                JSON.stringify({email, "role": "customer"}),
                 {
                     headers: { 'Content-Type': 'application/json' },
                     withCredentials: true

@@ -45,7 +45,7 @@ export const OtpContextProvider = ({ children }) => {
         if(authContext === 'signUp'){
             content.name = fullName;
         }
-        content.role = "restaurant_owner";
+        content.role = "customer";
         setLoading(true);
         try {
             console.log('URL: ' + URL);
