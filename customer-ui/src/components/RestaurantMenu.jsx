@@ -8,7 +8,6 @@ import MenuItemCard from "./MenuItemCard.jsx";
 import MenuItemRow from "./MenuItemRow.jsx";
 import HomeContext from "../context/HomeContext.jsx";
 import AuthContext from "../context/AuthProvider.jsx";
-import {toast} from "react-toastify";
 import useAxiosPrivate from "../hooks/useAxiosPrivate.js";
 
 const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;

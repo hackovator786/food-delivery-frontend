@@ -1,5 +1,5 @@
 import {Outlet, useNavigate} from "react-router-dom";
-import React, {useContext, useEffect} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {AppBar, Toolbar, IconButton, InputBase, Button, Box, styled, Badge} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
@@ -8,6 +8,9 @@ import ThemeContext from "../context/ThemeContext.jsx";
 import HomeContext from "../context/HomeContext.jsx";
 import AuthContext from "../context/AuthProvider.jsx";
 import useAxiosPrivate from "../hooks/useAxiosPrivate.js";
+import {Typography} from "@mui/material";
+import AuthModal from "./AuthModal.jsx";
+import useAuth from "../hooks/useAuth.js";
 
 const Search = styled("div")(({theme}) => ({
     position: "relative",
@@ -43,23 +46,26 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
     height: "100%",
 }));
 
-export default function Navbar() {
-    const {auth} = useContext(AuthContext);
+export default function Navbar({title}) {
+    const {auth} = useAuth();
+    const {modalOpen, setModalOpen} = useContext(AuthContext);
     const {PRIMARY_COLOR} = useContext(ThemeContext);
     const {cartItemsCount, setCartItemsCount} = useContext(HomeContext);
     const axiosPrivate = useAxiosPrivate();
+
+    const handleCloseModal = () => setModalOpen(false);
 
     const getCartItemsCount = async () => {
         try {
             const response = await axiosPrivate.get("/cart/get-items-count");
             setCartItemsCount(response.data.cartItemsCount ? response.data.cartItemsCount : 0);
-        } catch (err){
+        } catch (err) {
             console.log(err);
         }
     }
 
     useEffect(() => {
-        if(auth.accessToken) {
+        if (auth.accessToken) {
             console.log("Getting cart items");
             getCartItemsCount();
         }
@@ -96,22 +102,34 @@ export default function Navbar() {
                             objectFit: "contain",
                             cursor: "pointer",
                         }}
-                        onClick={() => {navigate("/")}}
+                        onClick={() => {
+                            navigate("/")
+                        }}
                     />
 
-                    <Search
-                        sx={{
-                            display: {xs: 'none', sm: 'flex'},
-                            flexGrow: 1,
-                            ml: {sm: 3},
-                        }}
-                    >
-                        <SearchIconWrapper>
-                            <SearchIcon/>
-                        </SearchIconWrapper>
-                        <StyledInputBase placeholder="Search restaurants or cuisines"
-                                         inputProps={{"aria-label": "search"}}/>
-                    </Search>
+                    {title === "Home" ? (<Search
+                            sx={{
+                                display: {xs: 'none', sm: 'flex'},
+                                flexGrow: 1,
+                                ml: {sm: 3},
+                            }}
+                        >
+                            <SearchIconWrapper>
+                                <SearchIcon/>
+                            </SearchIconWrapper>
+                            <StyledInputBase placeholder="Search restaurants or cuisines"
+                                             inputProps={{"aria-label": "search"}}/>
+                        </Search>) :
+                        title === "Checkout" ?
+                            (
+                                <Typography variant="h5" fontWeight="bold">
+                                    SECURE CHECKOUT
+                                </Typography>
+                            ) :
+                            (
+                                <></>
+                            )
+                    }
 
                     <Box sx={{
                         display: 'flex',
@@ -119,17 +137,21 @@ export default function Navbar() {
                         ml: {xs: 0, sm: 'auto'},
                         gap: {xs: 1, sm: 1},
                     }}>
-                        <IconButton color="black" aria-label="shopping cart" sx={{color: "black", marginLeft: 4,"&:hover": {
+                        <IconButton color="black" aria-label="shopping cart" sx={{
+                            color: "black", marginLeft: 4, "&:hover": {
                                 color: PRIMARY_COLOR
-                            },}}>
+                            },
+                        }}>
                             <Badge badgeContent={cartItemsCount > 9 ? "9+" : cartItemsCount} color="error">
-                                <ShoppingCartIcon />
+                                <ShoppingCartIcon/>
                             </Badge>
                         </IconButton>
-                        <Button color="inherit" sx={{color: "black", marginLeft: 2, "&:hover": {
-                            color: PRIMARY_COLOR
-                            }}}>
-                            Sign In
+                        <Button color="inherit" sx={{
+                            color: "black", marginLeft: 2, "&:hover": {
+                                color: PRIMARY_COLOR
+                            }
+                        }} onClick={()=>setModalOpen(true)}>
+                            {auth.accessToken ? "S" : "Sign In" }
                         </Button>
                     </Box>
                 </Toolbar>
@@ -157,6 +179,12 @@ export default function Navbar() {
             </Box>
 
             <Outlet/>
+
+            <AuthModal
+                open={modalOpen}
+                handleCloseModal={handleCloseModal}
+            />
+
         </>
     );
 }
