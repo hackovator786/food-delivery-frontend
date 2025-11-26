@@ -6,12 +6,16 @@ const HomeContext = createContext({});
 
 export const HomeContextProvider = ({ children }) => {
     const [cartItems, setCartItems] = useLocalStorage("cartItems", {});
-    const [cartItemsCount, setCartItemsCount] = useState(Object.keys(cartItems).length);
-    const [cartItemsRestaurantId, setCartItemsRestaurantId] = useState(null);
+    const [cartItemsCount, setCartItemsCount] = useState(Object.keys(cartItems ? cartItems : {})?.length);
+    const [cartItemsRestaurantId, setCartItemsRestaurantId] = useLocalStorage("restaurantId", null);
 
     useEffect(() => {
-        console.log("Inside HomeContext...");
-        setCartItemsCount(Object.keys(cartItems).length);
+        const length = Object.keys(cartItems).length;
+        setCartItemsCount(length);
+        if(length === 0)
+            setCartItemsRestaurantId(null);
+        else {
+        }
     }, [cartItems]);
 
     return (

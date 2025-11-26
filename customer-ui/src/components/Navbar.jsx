@@ -58,7 +58,7 @@ export default function Navbar({title}) {
     const getCartItemsCount = async () => {
         try {
             const response = await axiosPrivate.get("/cart/get-items-count");
-            setCartItemsCount(response.data.cartItemsCount ? response.data.cartItemsCount : 0);
+            setCartItemsCount(response.data?.cartItemsCount ? response.data.cartItemsCount : 0);
         } catch (err) {
             console.log(err);
         }
