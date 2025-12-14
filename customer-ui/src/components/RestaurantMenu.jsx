@@ -11,12 +11,13 @@ import useAxiosPrivate from "../hooks/useAxiosPrivate.js";
 import useAuth from "../hooks/useAuth.js";
 import useLocalStorage from "../hooks/useLocalStorage.js";
 import {toast} from "react-toastify";
+import RestaurantMenuContext from "../context/RestaurantMenuContext.jsx";
+import CartContext from "../context/CartContext.jsx";
 
 const IMAGE_BASE_URL = import.meta.env.VITE_IMAGE_BASE_URL;
 
 export default function RestaurantMenu() {
     const {auth} = useAuth();
-    const axiosPrivate = useAxiosPrivate();
     const {PRIMARY_COLOR} = useContext(ThemeContext);
     const [searchParams] = useSearchParams();
 
@@ -40,86 +41,15 @@ export default function RestaurantMenu() {
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
     const {
-        cartItems,
-        setCartItems,
-        cartItemsCount,
-        setCartItemsCount,
-        cartItemsRestaurantId,
-        setCartItemsRestaurantId
+        cartItemsQty,
+        getcartItemsQty,
     } = useContext(HomeContext);
 
-    const getCartItems = async () => {
-        try {
-            const response = await axiosPrivate.get("/cart/get-items-quantity", {
-                params: {
-                    "restaurant-id": restaurantId
-                }
-            });
-            setCartItems(response?.data);
-        } catch (err) {
-            console.log(err);
-        }
-    }
+    const {handleAdd,
+        handleRemove} = useContext(CartContext);
 
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedItem, setSelectedItem] = useState(null);
-
-    const handleAdd = async (item) => {
-        console.log(cartItems);
-        if (cartItemsRestaurantId && cartItemsRestaurantId !== item.restaurantId) {
-            toast.error("Cannot add to cart");
-            return;
-        }
-        if (!cartItemsRestaurantId) {
-            setCartItemsRestaurantId(item.restaurantId);
-        }
-        if (auth.accessToken) {
-            try {
-                const response = await axiosPrivate.post("/cart/add",
-                    {restaurantId: item.restaurantId, menuItemId: item.menuItemId});
-                // console.log(response);
-                setCartItems(response?.data?.items);
-            } catch (err) {
-                console.log(err);
-            }
-        } else {
-            setCartItems(prev => ({
-                ...prev,
-                [item.menuItemId]: (prev[item.menuItemId] || 0) + 1
-            }));
-        }
-    };
-
-    const handleRemove = async (item) => {
-        if (cartItemsRestaurantId && cartItemsRestaurantId !== item.restaurantId) {
-            return;
-        }
-        if (auth.accessToken) {
-            try {
-                const response = await axiosPrivate.put("/cart/update",
-                    {restaurantId: item.restaurantId, menuItemId: item.menuItemId, increase: false});
-                setCartItems(response?.data?.items||{});
-            } catch (err) {
-                console.log(err);
-            }
-        } else {
-            if (cartItems[item.menuItemId]) {
-                setCartItems(prev => {
-                    const updated = {...prev};
-
-                    if (updated[item.menuItemId] === 1) {
-                        delete updated[item.menuItemId];
-                    } else {
-                        updated[item.menuItemId] = updated[item.menuItemId] - 1;
-                    }
-                    console.log("Updated");
-                    console.log(updated);
-
-                    return updated;
-                });
-            }
-        }
-    };
 
     const handleOpenModal = (item) => {
         setSelectedItem(item);
@@ -130,7 +60,7 @@ export default function RestaurantMenu() {
     useEffect(() => {
         getMenuItems();
         if(auth.accessToken) {
-            getCartItems();
+            getcartItemsQty(restaurantId);
         }
     }, []);
 
@@ -157,7 +87,7 @@ export default function RestaurantMenu() {
                         <MenuItemCard
                             key={item.menuItemId}
                             item={item}
-                            quantity={cartItems[item.menuItemId] || 0}
+                            quantity={cartItemsQty[item.menuItemId] || 0}
                             onAdd={() => handleAdd(item)}
                             onRemove={() => handleRemove(item)}
                             onOpenModal={handleOpenModal}
@@ -170,7 +100,7 @@ export default function RestaurantMenu() {
                         <MenuItemRow
                             key={item.menuItemId}
                             item={item}
-                            quantity={cartItems[item.menuItemId] || 0}
+                            quantity={cartItemsQty[item.menuItemId] || 0}
                             onAdd={() => handleAdd(item)}
                             onRemove={() => handleRemove(item)}
                             onOpenModal={handleOpenModal}
@@ -183,7 +113,7 @@ export default function RestaurantMenu() {
                 open={modalOpen}
                 handleClose={handleCloseModal}
                 item={selectedItem}
-                quantity={selectedItem ? (cartItems[selectedItem.menuItemId] || 0) : 0}
+                quantity={selectedItem ? (cartItemsQty[selectedItem.menuItemId] || 0) : 0}
                 onAdd={() => selectedItem && handleAdd(selectedItem)}
                 onRemove={() => selectedItem && handleRemove(selectedItem)}
             />

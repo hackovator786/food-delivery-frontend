@@ -122,7 +122,7 @@ export default function Navbar({title}) {
                         </Search>) :
                         title === "Checkout" ?
                             (
-                                <Typography variant="h5" fontWeight="bold">
+                                <Typography variant="h6" fontWeight="bold" color={"black"}>
                                     SECURE CHECKOUT
                                 </Typography>
                             ) :
@@ -139,9 +139,9 @@ export default function Navbar({title}) {
                     }}>
                         <IconButton color="black" aria-label="shopping cart" sx={{
                             color: "black", marginLeft: 4, "&:hover": {
-                                color: PRIMARY_COLOR
-                            },
-                        }}>
+                                color: PRIMARY_COLOR,
+                            },px: 2.3, py: 2.3
+                        }} onClick={() => navigate("/cart")}>
                             <Badge badgeContent={cartItemsCount > 9 ? "9+" : cartItemsCount} color="error">
                                 <ShoppingCartIcon/>
                             </Badge>

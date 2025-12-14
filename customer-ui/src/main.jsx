@@ -10,6 +10,8 @@ import {SignUpContextProvider} from "./context/SignUpContext.jsx";
 import {LoginContextProvider} from "./context/LoginContext.jsx";
 import {OtpContextProvider} from "./context/OtpContext.jsx";
 import {HomeContextProvider} from "./context/HomeContext.jsx";
+import {RestaurantMenuContextProvider} from "./context/RestaurantMenuContext.jsx";
+import {CartContextProvider} from "./context/CartContext.jsx";
 
 createRoot(document.getElementById('root')).render(
     <StrictMode>
@@ -20,9 +22,13 @@ createRoot(document.getElementById('root')).render(
                         <LoginContextProvider>
                             <OtpContextProvider>
                                 <HomeContextProvider>
-                                    <Routes>
-                                        <Route path="/*" element={<App/>}/>
-                                    </Routes>
+                                    <RestaurantMenuContextProvider>
+                                        <CartContextProvider>
+                                            <Routes>
+                                                <Route path="/*" element={<App/>}/>
+                                            </Routes>
+                                        </CartContextProvider>
+                                    </RestaurantMenuContextProvider>
                                 </HomeContextProvider>
                             </OtpContextProvider>
                         </LoginContextProvider>

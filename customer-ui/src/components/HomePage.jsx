@@ -5,12 +5,12 @@ import Restaurants from "./Restaurants";
 import Footer from "./Footer.jsx";
 
 export default function HomePage() {
-  return (
-    <>
-      <HeroSection />
-      <MenuItemSwiper />
-      <Restaurants />
-      <Footer />
-    </>
-  );
+    return (
+        <>
+            <HeroSection/>
+            <MenuItemSwiper/>
+            <Restaurants/>
+            <Footer/>
+        </>
+    );
 }
